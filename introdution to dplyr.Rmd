@@ -25,11 +25,90 @@ filter(gapminder, country %in% c("Rwanda","Afghanistan"))
 ```
 
 
-## use select() to subset the data on variables or columns
+## Use select() to subset the data on variables or columns
 ```{r}
 sub_gapmind_01 <- gapminder %>% 
   select(., year, lifeExp) %>% 
   head(6)
 
 ```
+## Use mutate() to add new variables
+```{r}
+(my_gapminder <- gapminder)
+my_gapminder %>% 
+  mutate(.,gdp = pop * gdpPercap)
+```
+
+## Use arrange() to row-order data in a principled way
+```{r}
+my_gapminder %>% 
+  arrange(.,year,country)
+my_gapminder %>% 
+  filter(.,year == 2007) %>% 
+  arrange(.,desc(lifeExp))
+```
+
+## Use rename() to rename variables
+```{r}
+my_gapminder %>% 
+  rename(.,
+         life_exp = lifeExp,
+         gdp_percap = gdpPercap)
+```
+
+## select() can rename and reposition variables
+```{r}
+my_gapminder %>% 
+  filter(country == "Burundi", year > 1996) %>% 
+  select(yr = year, lifeExp, gdpPercap) %>% 
+  select(gdpPercap, everything())
+
+```
+
+## group_by() is a mighty weapon
+```{r}
+my_gapminder %>% 
+  group_by(continent) %>% 
+  #summarise(num = n())
+  tally()
+my_gapminder %>% 
+  #group_by(continent) %>% 
+  count(continent)
+```
+
+### general summarization
+```{r}
+my_gapminder %>% 
+  group_by(continent) %>% 
+  summarise_each(n = n(),
+            avg = mean(lifeExp))
+library(stringr)
+
+my_gapminder %>%
+  filter(continent %in% c("Africa","Asia"),year %in% c(1952, 2007)) %>%
+  group_by(continent) %>%
+  summarise_each(funs(mean,sd), lifeExp) %>% # 函数的参数怎么设置呢？
+  mutate(tongji = str_c(mean, "±", sd)) %>% 
+  select(continent,tongji) 
+
+```
+
+## Grouped mutate
+### Computing with group-wise summaries
+### Window functions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
